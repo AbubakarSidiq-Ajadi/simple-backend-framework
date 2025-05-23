@@ -1,0 +1,61 @@
+
+Sentinel App Development Log
+============================
+
+This document outlines the key challenges, lessons, and milestones encountered while building the Sentinel Stealth Security Android App.
+
+Overview
+--------
+Sentinel is a stealth-mode Android application that performs remote security functions such as locking the phone, tracking location, taking pictures, recording audio, and more—controlled via SMS, Firebase, or ADB.
+
+Challenges Faced
+----------------
+
+1. **Headless App Design (No UI)**
+   - Implementing functionality without any visible activity or layout.
+   - Used `finish()` in `MainActivity` and relied solely on background services.
+
+2. **Firebase Cloud Messaging Setup**
+   - Linking the app to Firebase using `google-services.json`.
+   - Extracting the device token without a UI (used Logcat and ADB).
+   - Understanding the difference between notification vs data messages.
+
+3. **Receiving SMS Commands**
+   - Android 8+ changed how broadcast receivers for SMS work.
+   - Ensuring the `SmsReceiver` was correctly registered with the right permission and priority.
+   - Handling SMS in the background using BroadcastReceiver.
+
+4. **Fake Shutdown Feature**
+   - Creating a full-screen black `Activity` with no XML layout.
+   - Blocking user interactions while allowing a wake command.
+
+5. **Permissions and Device Admin**
+   - Handling runtime permissions for sensitive operations.
+   - Managing `DevicePolicyManager` for locking and wiping the device.
+   - Ensuring permissions were correctly declared in the manifest.
+
+6. **Testing Without UI or Emulator Feedback**
+   - Used ADB + Logcat for all debugging.
+   - Relied on remote SMS or Firebase commands to simulate actions.
+
+7. **Stealth Service Communication**
+   - Routed Firebase and SMS commands through a central `StealthService`.
+   - Ensured commands like `RING`, `PICF`, `RECORD`, etc., triggered correctly.
+
+Lessons Learned
+---------------
+- Stealth apps must carefully handle background execution rules.
+- Firebase data messages are required for true silent command delivery.
+- Using `adb logcat` is a powerful tool when no UI is available.
+- Testing headless apps requires creativity, such as writing logs to files or sending tokens via SMS.
+
+Next Steps
+----------
+- Add photo and audio saving logic to external storage.
+- Add command history logging (optional backend support).
+- Add a disguised UI for user-triggered unlock/reset.
+- Build automated test cases for command handlers.
+
+Author Notes
+------------
+This app was built as a personal security project with a strong focus on remote control, minimal footprint, and learning experience.
